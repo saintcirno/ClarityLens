@@ -1,0 +1,294 @@
+/* ==========================================================================
+   Accessibility, Dyslexia, and Visual Comfort Styling Suite
+   ========================================================================== */
+
+/* Font Family Classes with Malayalam Script Fallbacks */
+.font-lexend {
+  --reader-font-family: 'Lexend', 'Noto Sans Malayalam', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.font-atkinson {
+  --reader-font-family: 'Atkinson Hyperlegible', 'Noto Sans Malayalam', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.font-opendyslexic {
+  --reader-font-family: 'OpenDyslexic', 'Noto Sans Malayalam', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.font-system {
+  --reader-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Malayalam', sans-serif !important;
+}
+
+/* Dyslexia Mode Active State (Enhanced spacing, line height, and character distinction) */
+.dyslexic-mode-active {
+  --reader-line-height: 2.05 !important;
+  --reader-letter-spacing: 0.06em !important;
+  --reader-word-spacing: 0.18em !important;
+}
+
+.dyslexic-mode-active .reader-content-box {
+  word-spacing: var(--reader-word-spacing);
+  font-weight: 500;
+}
+
+.dyslexic-mode-active .reader-word {
+  display: inline-block;
+  margin-right: 0.05em;
+}
+
+/* Bionic Reading Fixations */
+.bionic-text strong {
+  font-weight: 800;
+  color: var(--md-sys-color-primary);
+  letter-spacing: 0.01em;
+}
+
+/* Syllable Dots */
+.syllable-text {
+  letter-spacing: 0.04em;
+}
+
+/* Spoken Word Highlighting (Real-time tracking during TTS audio) */
+.word-active-spoken {
+  background: var(--word-highlight-bg) !important;
+  color: var(--word-highlight-color) !important;
+  border-radius: var(--md-sys-shape-corner-xs);
+  box-shadow: 0 0 0 2px var(--word-highlight-border), 0 2px 8px rgba(0, 0, 0, 0.2);
+  padding: 0.1em 0.25em;
+  display: inline;
+  font-weight: 700;
+  transition: background 0.05s ease;
+}
+
+/* Reading Ruler Guide Overlay */
+.reading-ruler-guide {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: rgba(255, 230, 0, 0.18);
+  border-top: 2px solid rgba(255, 204, 0, 0.8);
+  border-bottom: 2px solid rgba(255, 204, 0, 0.8);
+  pointer-events: none;
+  z-index: 999;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.35);
+  transition: top 0.05s ease-out;
+}
+
+.reading-ruler-guide.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Contrast & Color Vision Themes
+   ========================================================================== */
+
+/* 1. M3 Dynamic Dark Theme */
+.theme-m3-dark {
+  --md-sys-color-primary: #91a7ff;
+  --md-sys-color-on-primary: #102a71;
+  --md-sys-color-primary-container: #2542a6;
+  --md-sys-color-on-primary-container: #dbe4ff;
+
+  --md-sys-color-secondary: #adb5bd;
+  --md-sys-color-on-secondary: #212529;
+  --md-sys-color-secondary-container: #343a40;
+  --md-sys-color-on-secondary-container: #f8f9fa;
+
+  --md-sys-color-tertiary: #66d9e8;
+  --md-sys-color-on-tertiary: #0b4953;
+  --md-sys-color-tertiary-container: #1098ad;
+  --md-sys-color-on-tertiary-container: #e3fafc;
+
+  --md-sys-color-background: #141517;
+  --md-sys-color-on-background: #e9ecef;
+
+  --md-sys-color-surface: #1a1b1e;
+  --md-sys-color-on-surface: #e9ecef;
+  --md-sys-color-surface-variant: #25262b;
+  --md-sys-color-on-surface-variant: #ced4da;
+
+  --md-sys-color-surface-container-lowest: #0e0e10;
+  --md-sys-color-surface-container-low: #141517;
+  --md-sys-color-surface-container: #1a1b1e;
+  --md-sys-color-surface-container-high: #25262b;
+  --md-sys-color-surface-container-highest: #2c2e33;
+
+  --md-sys-color-outline: #373a40;
+  --md-sys-color-outline-variant: #25262b;
+
+  --word-highlight-bg: #ffe066;
+  --word-highlight-border: #fcc419;
+  --word-highlight-color: #000000;
+}
+
+/* 2. High Contrast OLED Black (WCAG AAA Compliant) */
+.theme-high-contrast-oled {
+  --md-sys-color-primary: #ffff00;
+  --md-sys-color-on-primary: #000000;
+  --md-sys-color-primary-container: #333300;
+  --md-sys-color-on-primary-container: #ffff99;
+
+  --md-sys-color-secondary: #00ffff;
+  --md-sys-color-on-secondary: #000000;
+  --md-sys-color-secondary-container: #003333;
+  --md-sys-color-on-secondary-container: #ccffff;
+
+  --md-sys-color-tertiary: #00ff66;
+  --md-sys-color-on-tertiary: #000000;
+  --md-sys-color-tertiary-container: #003311;
+  --md-sys-color-on-tertiary-container: #ccffdd;
+
+  --md-sys-color-background: #000000;
+  --md-sys-color-on-background: #ffffff;
+
+  --md-sys-color-surface: #000000;
+  --md-sys-color-on-surface: #ffffff;
+  --md-sys-color-surface-variant: #111111;
+  --md-sys-color-on-surface-variant: #ffffff;
+
+  --md-sys-color-surface-container-lowest: #000000;
+  --md-sys-color-surface-container-low: #080808;
+  --md-sys-color-surface-container: #111111;
+  --md-sys-color-surface-container-high: #1a1a1a;
+  --md-sys-color-surface-container-highest: #222222;
+
+  --md-sys-color-outline: #ffffff;
+  --md-sys-color-outline-variant: #888888;
+
+  --word-highlight-bg: #ffff00;
+  --word-highlight-border: #ffffff;
+  --word-highlight-color: #000000;
+}
+
+/* 3. Yellow on Black (Low-Vision Standard) */
+.theme-yellow-on-black {
+  --md-sys-color-primary: #ffee00;
+  --md-sys-color-on-primary: #000000;
+  --md-sys-color-primary-container: #2b2800;
+  --md-sys-color-on-primary-container: #fff9a6;
+
+  --md-sys-color-secondary: #e6d800;
+  --md-sys-color-on-secondary: #000000;
+  --md-sys-color-secondary-container: #1f1d00;
+  --md-sys-color-on-secondary-container: #fffbcc;
+
+  --md-sys-color-tertiary: #ffee55;
+  --md-sys-color-on-tertiary: #000000;
+  --md-sys-color-tertiary-container: #3d3a00;
+  --md-sys-color-on-tertiary-container: #ffffcc;
+
+  --md-sys-color-background: #000000;
+  --md-sys-color-on-background: #ffee00;
+
+  --md-sys-color-surface: #000000;
+  --md-sys-color-on-surface: #ffee00;
+  --md-sys-color-surface-variant: #1a1800;
+  --md-sys-color-on-surface-variant: #ffe600;
+
+  --md-sys-color-surface-container-lowest: #000000;
+  --md-sys-color-surface-container-low: #0a0900;
+  --md-sys-color-surface-container: #141300;
+  --md-sys-color-surface-container-high: #1f1d00;
+  --md-sys-color-surface-container-highest: #2b2800;
+
+  --md-sys-color-outline: #ffee00;
+  --md-sys-color-outline-variant: #807700;
+
+  --word-highlight-bg: #ffffff;
+  --word-highlight-border: #ffee00;
+  --word-highlight-color: #000000;
+}
+
+/* 4. Irlen Syndrome: Warm Cream / Sepia (Anti-Glare) */
+.theme-irlen-cream {
+  --md-sys-color-primary: #5c4033;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #e6d3c0;
+  --md-sys-color-on-primary-container: #2b1d16;
+
+  --md-sys-color-secondary: #6e584d;
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: #ebdcd1;
+  --md-sys-color-on-secondary-container: #2e231c;
+
+  --md-sys-color-background: #faf3e0;
+  --md-sys-color-on-background: #362d28;
+
+  --md-sys-color-surface: #fdfaf3;
+  --md-sys-color-on-surface: #362d28;
+  --md-sys-color-surface-variant: #f2e9d2;
+  --md-sys-color-on-surface-variant: #544740;
+
+  --md-sys-color-surface-container: #f5eed8;
+  --md-sys-color-surface-container-high: #ebdcc0;
+  --md-sys-color-outline: #c4b5a2;
+  --md-sys-color-outline-variant: #e0d2c0;
+
+  --word-highlight-bg: #ffe4a0;
+  --word-highlight-border: #d4a350;
+  --word-highlight-color: #2b1d16;
+}
+
+/* 5. Irlen Syndrome: Soft Mint Green */
+.theme-irlen-mint {
+  --md-sys-color-primary: #2d6a4f;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #d8f3dc;
+  --md-sys-color-on-primary-container: #081c15;
+
+  --md-sys-color-background: #e8f5e9;
+  --md-sys-color-on-background: #1b4332;
+
+  --md-sys-color-surface: #f1f8e9;
+  --md-sys-color-on-surface: #1b4332;
+  --md-sys-color-surface-container: #dcedc8;
+  --md-sys-color-outline: #a3b18a;
+  --md-sys-color-outline-variant: #c7d2b6;
+
+  --word-highlight-bg: #b7e4c7;
+  --word-highlight-border: #40916c;
+  --word-highlight-color: #081c15;
+}
+
+/* 6. Irlen Syndrome: Soft Peach */
+.theme-irlen-peach {
+  --md-sys-color-primary: #bc4749;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #ffe5d9;
+  --md-sys-color-on-primary-container: #3d1314;
+
+  --md-sys-color-background: #fdf0ed;
+  --md-sys-color-on-background: #382424;
+
+  --md-sys-color-surface: #fff8f6;
+  --md-sys-color-on-surface: #382424;
+  --md-sys-color-surface-container: #fae1dd;
+  --md-sys-color-outline: #e5989b;
+  --md-sys-color-outline-variant: #f2c6c2;
+
+  --word-highlight-bg: #ffccd5;
+  --word-highlight-border: #bc4749;
+  --word-highlight-color: #382424;
+}
+
+/* 7. Irlen Syndrome: Soft Sky Blue */
+.theme-irlen-blue {
+  --md-sys-color-primary: #0077b6;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #caf0f8;
+  --md-sys-color-on-primary-container: #03045e;
+
+  --md-sys-color-background: #edf6f9;
+  --md-sys-color-on-background: #1d3557;
+
+  --md-sys-color-surface: #f5fafd;
+  --md-sys-color-on-surface: #1d3557;
+  --md-sys-color-surface-container: #e0f2fe;
+  --md-sys-color-outline: #90e0ef;
+  --md-sys-color-outline-variant: #bae6fd;
+
+  --word-highlight-bg: #90e0ef;
+  --word-highlight-border: #0077b6;
+  --word-highlight-color: #03045e;
+}

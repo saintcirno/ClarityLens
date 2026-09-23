@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-m3-light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClarityLens — AI-Powered Accessibility Reader (Zero-API, Dataset-Driven)</title>
+  <meta name="description"
+    content="Accessible document reader converting photos, images, and PDF files into speech and translated language for visually impaired and dyslexic users. Runs 100% offline with zero external APIs.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- Google Fonts: Lexend, Atkinson Hyperlegible & Noto Sans Malayalam for maximum readability -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Lexend:wght@300;400;500;600;700;800&family=Noto+Sans+Malayalam:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="/src/styles/material3.css">
+  <link rel="stylesheet" href="/src/styles/accessibility.css">
+</head>
+
+<body>
+  <!-- Screen Reader Announcements (ARIA Live Region) -->
+  <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"
+    style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
+  </div>
+
+  <!-- Reading Ruler Horizontal Guide Overlay -->
+  <div id="reading-ruler-overlay" class="reading-ruler-guide hidden" aria-hidden="true"></div>
+
+  <!-- Material 3 Top App Bar -->
+  <header class="m3-top-app-bar" role="banner">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">👓</div>
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <h1 class="brand-title">ClarityLens</h1>
+          <span class="brand-badge">Zero-API · Offline Reader</span>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--md-sys-color-on-surface-variant); margin-top: 1px;">
+          Accessibility Reader for Visually Impaired & Dyslexic Users
+        </p>
+      </div>
+    </div>
+
+    <!-- Quick Accessibility & Theme Toolbar -->
+    <div class="m3-actions-row" role="toolbar" aria-label="Accessibility Settings">
+      <!-- Theme & Contrast Selector -->
+      <select id="theme-selector" class="m3-select" aria-label="Color Theme and Contrast Mode">
+        <option value="m3-light">☀️ M3 Light</option>
+        <option value="m3-dark">🌙 M3 Dark</option>
+        <option value="high-contrast-oled">⚡ High Contrast (OLED)</option>
+        <option value="yellow-on-black">🟡 Yellow on Black</option>
+        <option value="irlen-cream">📜 Irlen Soft Cream</option>
+        <option value="irlen-mint">🌿 Irlen Mint Green</option>
+        <option value="irlen-peach">🍑 Irlen Soft Peach</option>
+        <option value="irlen-blue">🌊 Irlen Sky Blue</option>
+      </select>
+
+      <!-- Dyslexic Font Family Selector -->
+      <select id="font-family-select" class="m3-select" aria-label="Dyslexic Font Family">
+        <option value="lexend" selected>✨ Lexend (Dyslexia)</option>
+        <option value="atkinson">👁️ Atkinson Hyperlegible</option>
+        <option value="opendyslexic">🔤 OpenDyslexic</option>
+        <option value="system">📱 System Sans</option>
+      </select>
+
+      <!-- Dyslexic Spacing Mode Toggle -->
+      <button id="toggle-dyslexic-mode" class="m3-btn m3-btn-outlined"
+        title="Toggle Dyslexic Spacing & High Legibility Mode">
+        <span aria-hidden="true">🔤</span> <span>Dyslexic Spacing</span>
+      </button>
+
+      <!-- Reading Ruler Toggle -->
+      <button id="toggle-reading-ruler" class="m3-btn m3-btn-outlined" title="Toggle Reading Ruler line guide">
+        <span aria-hidden="true">📏</span> <span>Reading Ruler</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main App Layout -->
+  <main class="app-container" role="main">
+    <!-- Left Column: Input & OCR Studio -->
+    <section class="m3-card m3-card-elevated" aria-labelledby="input-studio-heading">
+      <div class="m3-card-header">
+        <h2 id="input-studio-heading" class="m3-card-title">
+          <span aria-hidden="true">📄</span> Document & File Input
+        </h2>
+        <span id="ocr-engine-tag" class="m3-badge"
+          style="font-size: 0.75rem; background: var(--md-sys-color-tertiary-container); color: var(--md-sys-color-on-tertiary-container); padding: 0.2rem 0.6rem; border-radius: 999px;">
+          ⚡ Tesseract OCR & PDF Engine
+        </span>
+      </div>
+
+      <!-- Dropzone (Images and PDF documents) -->
+      <div id="dropzone" class="m3-dropzone" tabindex="0" role="button"
+        aria-label="Drop or select document image or PDF file">
+        <input type="file" id="file-input" accept="image/*,application/pdf,.pdf" style="display: none;" aria-hidden="true">
+        <div class="m3-dropzone-icon" aria-hidden="true">📄</div>
+        <div class="m3-dropzone-title">Drop your document image or PDF file here</div>
+        <p class="m3-dropzone-subtitle">Supports PDF, JPG, PNG, WEBP, BMP · Full-document OCR & Text Reader</p>
+
+        <div class="m3-input-actions">
+          <button type="button" id="btn-browse" class="m3-btn m3-btn-filled">
+            <span>📁 Select Image or PDF</span>
+          </button>
+          <button type="button" id="btn-camera" class="m3-btn m3-btn-tonal">
+            <span>📸 Scan with Camera</span>
+          </button>
+          <button type="button" id="btn-paste" class="m3-btn m3-btn-outlined"
+            title="Paste screenshot from clipboard (Ctrl+V)">
+            <span>📋 Paste Image</span>
+          </button>
+          <button type="button" id="btn-toggle-text-input" class="m3-btn m3-btn-text">
+            <span>✍️ Direct Text</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Direct Text Input Area (Collapsible) -->
+      <div id="direct-text-wrapper" style="display: none; margin-top: 1rem;">
+        <label for="direct-text-input"
+          style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.4rem;">
+          Type or paste text directly:
+        </label>
+        <textarea id="direct-text-input" rows="5" class="m3-select"
+          style="width: 100%; border-radius: var(--md-sys-shape-corner-lg); padding: 0.75rem; font-size: 0.95rem; resize: vertical;"
+          placeholder="Type or paste any document, article, or book text here..."></textarea>
+        <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+          <button id="btn-process-direct-text" class="m3-btn m3-btn-filled">
+            <span>Translate & Read Text</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Image / PDF Preview Container -->
+      <div id="preview-container" style="display: none;">
+        <div class="image-preview-wrapper">
+          <img id="image-preview" src="" alt="Captured document or file preview">
+        </div>
+
+        <!-- PDF Pagination Controls (Shown for multi-page PDFs) -->
+        <div id="pdf-pagination-bar" style="display: none; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 0.5rem; background: var(--md-sys-color-surface-container); padding: 0.4rem 0.8rem; border-radius: var(--md-sys-shape-corner-md); font-size: 0.85rem;">
+          <button type="button" id="btn-pdf-prev" class="m3-btn m3-btn-text" style="padding: 0.2rem 0.6rem; font-size: 0.8rem;">◀ Prev Page</button>
+          <span id="pdf-page-indicator" style="font-weight: 600; font-size: 0.85rem;">Page 1 of 1</span>
+          <button type="button" id="btn-pdf-next" class="m3-btn m3-btn-text" style="padding: 0.2rem 0.6rem; font-size: 0.8rem;">Next Page ▶</button>
+        </div>
+
+        <!-- Image Preprocessing Bar -->
+        <div class="preprocess-bar" role="toolbar" aria-label="Image enhancement tools">
+          <span>Enhance:</span>
+          <button id="btn-enhance-contrast" class="m3-btn m3-btn-text"
+            style="font-size: 0.8rem; padding: 0.25rem 0.6rem;">
+            🌓 Auto Contrast
+          </button>
+          <button id="btn-binarize" class="m3-btn m3-btn-text" style="font-size: 0.8rem; padding: 0.25rem 0.6rem;">
+            ⬛ Binarize (Otsu)
+          </button>
+          <button id="btn-rotate" class="m3-btn m3-btn-text" style="font-size: 0.8rem; padding: 0.25rem 0.6rem;">
+            🔄 Rotate 90°
+          </button>
+          <button id="btn-clear-image" class="m3-btn m3-btn-text"
+            style="font-size: 0.8rem; padding: 0.25rem 0.6rem; color: var(--md-sys-color-error); margin-left: auto;">
+            ✖ Remove Image
+          </button>
+        </div>
+
+        <!-- OCR Language & Execution Controls -->
+        <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.65rem;">
+          <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; background: var(--md-sys-color-surface-container); padding: 0.5rem 0.85rem; border-radius: var(--md-sys-shape-corner-md);">
+            <label for="ocr-lang-select" style="font-size: 0.85rem; font-weight: 600;">
+              <span>🌐 Tesseract OCR Language:</span>
+            </label>
+            <select id="ocr-lang-select" class="m3-select" style="padding: 0.3rem 0.6rem; font-size: 0.85rem;">
+              <option value="eng" selected>English (eng)</option>
+              <option value="mal">Malayalam (മലയാളം - mal)</option>
+            </select>
+          </div>
+
+          <button id="btn-run-ocr" class="m3-btn m3-btn-filled"
+            style="width: 100%; padding: 0.85rem; font-size: 1.05rem;">
+            <span>🔍 Read Whole Document with Tesseract OCR</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- OCR Progress Bar -->
+      <div id="ocr-progress-container" style="display: none; margin-top: 1rem;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600;">
+          <span id="ocr-status-text">Processing locally with WebAssembly...</span>
+          <span id="ocr-percent-text">0%</span>
+        </div>
+        <div class="m3-progress-bar">
+          <div id="ocr-progress-fill" class="m3-progress-bar-fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Accessible Reader & Translator -->
+    <section class="m3-card m3-card-elevated" aria-labelledby="reader-heading">
+      <div class="m3-card-header">
+        <h2 id="reader-heading" class="m3-card-title">
+          <span aria-hidden="true">🔊</span> Accessible Reader & Audio
+        </h2>
+
+        <!-- Dyslexia Visual Tools -->
+        <div style="display: flex; align-items: center; gap: 0.4rem;">
+          <button id="btn-toggle-bionic" class="m3-btn m3-btn-tonal"
+            style="font-size: 0.8rem; padding: 0.35rem 0.75rem;"
+            title="Bionic reading bolds word fixations to guide the eyes">
+            <strong>B</strong>ionic Reading
+          </button>
+          <button id="btn-toggle-syllables" class="m3-btn m3-btn-tonal"
+            style="font-size: 0.8rem; padding: 0.35rem 0.75rem;" title="Separate syllables with subtle dots">
+            Syllables
+          </button>
+          <button id="btn-copy-text" class="m3-icon-btn" title="Copy current text to clipboard" aria-label="Copy text">
+            📋
+          </button>
+        </div>
+      </div>
+
+      <!-- Segmented Tabs -->
+      <div class="m3-tabs-container" role="tablist">
+        <button id="tab-translated" class="m3-tab-btn active" role="tab" aria-selected="true"
+          aria-controls="reader-display">
+          <span>📄 Translated Text</span>
+        </button>
+        <button id="tab-original" class="m3-tab-btn" role="tab" aria-selected="false" aria-controls="reader-display">
+          <span>📄 Original File / OCR Text</span>
+        </button>
+      </div>
+
+      <!-- Translation Language Selector Bar -->
+      <div id="translation-bar"
+        style="display: flex; align-items: center; gap: 0.75rem; background: var(--md-sys-color-surface-container); padding: 0.5rem 1rem; border-radius: var(--md-sys-shape-corner-md); margin-bottom: 0.75rem;">
+        <label for="target-lang-select" style="font-size: 0.85rem; font-weight: 600;">Target Language:</label>
+        <select id="target-lang-select" class="m3-select">
+          <!-- Populated dynamically from translation dataset -->
+        </select>
+        <span id="translation-coverage"
+          style="font-size: 0.8rem; color: var(--md-sys-color-on-surface-variant); margin-left: auto;">
+          100% Local Dataset
+        </span>
+      </div>
+
+      <!-- Main Reader Display Box (Word-by-word active glow during speech) -->
+      <div id="reader-display" class="reader-content-box" tabindex="0" role="region" aria-label="Reading content box">
+        <div style="color: var(--md-sys-color-on-surface-variant); text-align: center; margin-top: 4rem;">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;" aria-hidden="true">📖</div>
+          <p style="font-weight: 600; font-size: 1.1rem;">No document loaded yet</p>
+          <p style="font-size: 0.9rem; margin-top: 0.25rem;">
+            Upload an image, PDF file, capture with camera, or paste text to begin.
+          </p>
+        </div>
+      </div>
+
+      <!-- Offline Text-to-Speech Audio Player Bar -->
+      <div class="audio-player-bar" role="region" aria-label="Audio Speech Controls">
+        <div class="audio-controls-group">
+          <button id="btn-audio-play" class="m3-btn m3-btn-filled" title="Listen with Text-to-Speech">
+            <span id="audio-play-icon" aria-hidden="true">▶️</span>
+            <span id="audio-play-label">Play Audio</span>
+          </button>
+          <button id="btn-audio-stop" class="m3-btn m3-btn-tonal" title="Stop Audio" aria-label="Stop audio">
+            <span aria-hidden="true">⏹️</span>
+          </button>
+        </div>
+
+        <div class="audio-settings-group">
+          <!-- Voice Selector -->
+          <div class="audio-slider-item">
+            <label for="voice-select" style="font-size: 0.8rem;">Voice:</label>
+            <select id="voice-select" class="m3-select" style="max-width: 140px; text-overflow: ellipsis;">
+              <option value="">Default Voice</option>
+            </select>
+          </div>
+
+          <!-- Speed Slider -->
+          <div class="audio-slider-item">
+            <label for="speed-slider" style="font-size: 0.8rem;">Speed:</label>
+            <input type="range" id="speed-slider" class="m3-slider" min="0.5" max="2.0" step="0.1" value="1.0"
+              aria-label="Speech Speed">
+            <span id="speed-val" style="font-size: 0.8rem; min-width: 28px;">1.0x</span>
+          </div>
+
+          <!-- Pitch Slider -->
+          <div class="audio-slider-item">
+            <label for="pitch-slider" style="font-size: 0.8rem;">Pitch:</label>
+            <input type="range" id="pitch-slider" class="m3-slider" min="0.5" max="1.5" step="0.1" value="1.0"
+              aria-label="Speech Pitch">
+          </div>
+        </div>
+      </div>
+
+      <!-- Reader Typography Sizing Bar -->
+      <div
+        style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--md-sys-color-outline-variant);">
+        <div style="display: flex; align-items: center; gap: 0.4rem;">
+          <span style="font-size: 0.82rem; font-weight: 600; color: var(--md-sys-color-on-surface-variant);">Text
+            Size:</span>
+          <button id="btn-font-decrease" class="m3-btn m3-btn-outlined"
+            style="padding: 0.2rem 0.6rem; font-size: 0.85rem;" title="Decrease text size">A-</button>
+          <span id="font-size-indicator"
+            style="font-size: 0.85rem; font-weight: 600; min-width: 38px; text-align: center;">18px</span>
+          <button id="btn-font-increase" class="m3-btn m3-btn-outlined"
+            style="padding: 0.2rem 0.6rem; font-size: 0.85rem;" title="Increase text size">A+</button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <label for="line-height-select"
+            style="font-size: 0.82rem; font-weight: 600; color: var(--md-sys-color-on-surface-variant);">Spacing:</label>
+          <select id="line-height-select" class="m3-select" style="padding: 0.25rem 0.5rem; font-size: 0.82rem;">
+            <option value="1.5">Compact (1.5)</option>
+            <option value="1.7" selected>Normal (1.7)</option>
+            <option value="2.0">Relaxed (2.0)</option>
+            <option value="2.4">Dyslexia Wide (2.4)</option>
+          </select>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Camera Scanner Modal -->
+  <div id="camera-modal" class="camera-modal hidden" role="dialog" aria-modal="true"
+    aria-labelledby="camera-modal-title">
+    <div class="camera-card">
+      <div class="m3-card-header" style="margin-bottom: 0; padding: 1rem 1.25rem;">
+        <h3 id="camera-modal-title" class="m3-card-title">
+          <span>📸</span> Camera Document Scanner
+        </h3>
+        <button id="btn-close-camera" class="m3-icon-btn" aria-label="Close camera">✕</button>
+      </div>
+
+      <div class="camera-view-box">
+        <video id="camera-video" autoplay playsinline></video>
+        <div class="camera-crosshair" aria-hidden="true"></div>
+      </div>
+
+      <div class="camera-controls">
+        <button id="btn-flip-camera" class="m3-btn m3-btn-tonal">
+          <span>🔄 Flip Camera</span>
+        </button>
+        <button id="btn-snap-photo" class="m3-btn m3-btn-filled" style="padding: 0.85rem 2rem; font-size: 1.1rem;">
+          <span>📸 Snap & Read</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Snackbar -->
+  <div id="snackbar" class="m3-snackbar" role="status" aria-live="polite"></div>
+
+  <!-- Main JavaScript Application Bundle -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>

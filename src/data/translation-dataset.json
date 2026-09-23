@@ -1,0 +1,174 @@
+{
+  "metadata": {
+    "name": "Clarity English-Malayalam Accessibility Translation Matrix",
+    "version": "4.0.0",
+    "description": "Client-side translation matrix specifically focused on English and Malayalam (മലയാളം) for documents, articles, books, essays, and general reading vocabulary."
+  },
+  "languages": [
+    { "code": "ml", "name": "Malayalam", "nativeName": "മലയാളം", "flag": "🇮🇳", "ttsLang": "ml-IN" },
+    { "code": "en", "name": "English", "nativeName": "English", "flag": "🇬🇧", "ttsLang": "en-US" }
+  ],
+  "phrases": {
+    "good morning": {
+      "ml": "സുപ്രഭാതം",
+      "en": "Good morning"
+    },
+    "good evening": {
+      "ml": "ശുഭ സായാഹ്നം",
+      "en": "Good evening"
+    },
+    "thank you": {
+      "ml": "നന്ദി",
+      "en": "Thank you"
+    },
+    "welcome to": {
+      "ml": "സ്വാഗതം",
+      "en": "Welcome to"
+    },
+    "how are you": {
+      "ml": "സുഖമാണോ?",
+      "en": "How are you"
+    },
+    "have a nice day": {
+      "ml": "നല്ലൊരു ദിവസം ആശംസിക്കുന്നു",
+      "en": "Have a nice day"
+    },
+    "read the document": {
+      "ml": "രേഖ വായിക്കുക",
+      "en": "Read the document"
+    },
+    "table of contents": {
+      "ml": "ഉള്ളടക്ക പട്ടിക",
+      "en": "Table of contents"
+    },
+    "first chapter": {
+      "ml": "ഒന്നാം അധ്യായം",
+      "en": "First chapter"
+    },
+    "main idea": {
+      "ml": "പ്രധാന ആശയം",
+      "en": "Main idea"
+    },
+    "in conclusion": {
+      "ml": "ഉപസംഹാരമായി",
+      "en": "In conclusion"
+    },
+    "for example": {
+      "ml": "ഉദാഹരണത്തിന്",
+      "en": "For example"
+    },
+    "important information": {
+      "ml": "പ്രധാന വിവരങ്ങൾ",
+      "en": "Important information"
+    },
+    "short story": {
+      "ml": "ചെറുകഥ",
+      "en": "Short story"
+    },
+    "learning to read": {
+      "ml": "വായിക്കാൻ പഠിക്കുന്നു",
+      "en": "Learning to read"
+    },
+    "knowledge is power": {
+      "ml": "അറിവാണ് ശക്തി",
+      "en": "Knowledge is power"
+    },
+    "page number": {
+      "ml": "പേജ് നമ്പർ",
+      "en": "Page number"
+    }
+  },
+  "words": {
+    "document": { "ml": "രേഖ / പ്രമാണം", "en": "document" },
+    "file": { "ml": "ഫയൽ", "en": "file" },
+    "page": { "ml": "പേജ് / താൾ", "en": "page" },
+    "book": { "ml": "പുസ്തകം", "en": "book" },
+    "read": { "ml": "വായിക്കുക", "en": "read" },
+    "reading": { "ml": "വായന", "en": "reading" },
+    "write": { "ml": "എഴുതുക", "en": "write" },
+    "text": { "ml": "വാചകം / ഉള്ളടക്കം", "en": "text" },
+    "letter": { "ml": "കത്ത് / അക്ഷരം", "en": "letter" },
+    "story": { "ml": "കഥ", "en": "story" },
+    "chapter": { "ml": "അധ്യായം", "en": "chapter" },
+    "paper": { "ml": "കടലാസ് / പേപ്പർ", "en": "paper" },
+    "article": { "ml": "ലേഖനം", "en": "article" },
+    "paragraph": { "ml": "ഖണ്ഡിക", "en": "paragraph" },
+    "word": { "ml": "വാക്ക്", "en": "word" },
+    "sentence": { "ml": "വാക്യം", "en": "sentence" },
+    "language": { "ml": "ഭാഷ", "en": "language" },
+    "education": { "ml": "വിദ്യാഭ്യാസം", "en": "education" },
+    "school": { "ml": "വിദ്യാലയം / സ്കൂൾ", "en": "school" },
+    "student": { "ml": "വിദ്യാർത്ഥി", "en": "student" },
+    "teacher": { "ml": "അധ്യാപകൻ / അധ്യാപിക", "en": "teacher" },
+    "study": { "ml": "പഠിക്കുക", "en": "study" },
+    "learn": { "ml": "പഠിക്കുക", "en": "learn" },
+    "knowledge": { "ml": "അറിവ്", "en": "knowledge" },
+    "information": { "ml": "വിവരം", "en": "information" },
+    "question": { "ml": "ചോദ്യം", "en": "question" },
+    "answer": { "ml": "ഉത്തരം", "en": "answer" },
+    "help": { "ml": "സഹായം", "en": "help" },
+    "library": { "ml": "ഗ്രന്ഥശാല / ലൈബ്രറി", "en": "library" },
+    "author": { "ml": "എഴുത്തുകാരൻ / രചയിതാവ്", "en": "author" },
+    "title": { "ml": "തലക്കെട്ട്", "en": "title" },
+    "name": { "ml": "പേര്", "en": "name" },
+    "day": { "ml": "ദിവസം", "en": "day" },
+    "night": { "ml": "രാത്രി", "en": "night" },
+    "morning": { "ml": "പ്രഭാതം / രാവിലെ", "en": "morning" },
+    "evening": { "ml": "വൈകുന്നേരം", "en": "evening" },
+    "today": { "ml": "ഇന്ന്", "en": "today" },
+    "tomorrow": { "ml": "നാളെ", "en": "tomorrow" },
+    "yesterday": { "ml": "ഇന്നലെ", "en": "yesterday" },
+    "time": { "ml": "സമയം", "en": "time" },
+    "year": { "ml": "വർഷം", "en": "year" },
+    "month": { "ml": "മാസം", "en": "month" },
+    "week": { "ml": "ആഴ്ച", "en": "week" },
+    "world": { "ml": "ലോകം", "en": "world" },
+    "nature": { "ml": "പ്രകൃതി", "en": "nature" },
+    "family": { "ml": "കുടുംബം", "en": "family" },
+    "friend": { "ml": "സുഹൃത്ത്", "en": "friend" },
+    "home": { "ml": "വീട്", "en": "home" },
+    "house": { "ml": "ഭവനം / വീട്", "en": "house" },
+    "person": { "ml": "വ്യക്തി / ആൾ", "en": "person" },
+    "child": { "ml": "കുട്ടി", "en": "child" },
+    "adult": { "ml": "മുതിർന്നയാൾ", "en": "adult" },
+    "water": { "ml": "വെള്ളം", "en": "water" },
+    "food": { "ml": "ഭക്ഷണം", "en": "food" },
+    "city": { "ml": "നഗരം", "en": "city" },
+    "country": { "ml": "രാജ്യം", "en": "country" },
+    "building": { "ml": "കെട്ടിടം", "en": "building" },
+    "room": { "ml": "മുറി", "en": "room" },
+    "floor": { "ml": "നില", "en": "floor" },
+    "open": { "ml": "തുറക്കുക / തുറന്നിരിക്കുന്നു", "en": "open" },
+    "close": { "ml": "അടയ്ക്കുക", "en": "close" },
+    "start": { "ml": "തുടങ്ങുക", "en": "start" },
+    "stop": { "ml": "നിർത്തുക", "en": "stop" },
+    "important": { "ml": "പ്രധാനം", "en": "important" },
+    "simple": { "ml": "ലളിതം", "en": "simple" },
+    "clear": { "ml": "വ്യക്തം", "en": "clear" },
+    "easy": { "ml": "എളുപ്പം", "en": "easy" },
+    "difficult": { "ml": "കഠിനം", "en": "difficult" },
+    "good": { "ml": "നല്ലത്", "en": "good" },
+    "great": { "ml": "വലിയ / മഹത്തായ", "en": "great" },
+    "beautiful": { "ml": "മനോഹരം", "en": "beautiful" },
+    "new": { "ml": "പുതിയ", "en": "new" },
+    "old": { "ml": "പഴയ", "en": "old" },
+    "small": { "ml": "ചെറുത്", "en": "small" },
+    "large": { "ml": "വലുത്", "en": "large" },
+    "first": { "ml": "ആദ്യം", "en": "first" },
+    "last": { "ml": "അവസാനം", "en": "last" },
+    "speech": { "ml": "സംസാരം / പ്രസംഗം", "en": "speech" },
+    "voice": { "ml": "ശബ്ദം", "en": "voice" },
+    "sound": { "ml": "നാദം / ശബ്ദം", "en": "sound" },
+    "listen": { "ml": "ശ്രദ്ധിച്ചു കേൾക്കുക", "en": "listen" },
+    "hear": { "ml": "കേൾക്കുക", "en": "hear" },
+    "see": { "ml": "കാണുക", "en": "see" },
+    "look": { "ml": "നോക്കുക", "en": "look" },
+    "understand": { "ml": "മനസ്സിലാക്കുക", "en": "understand" },
+    "think": { "ml": "ചിന്തിക്കുക", "en": "think" },
+    "know": { "ml": "അറിയുക", "en": "know" },
+    "love": { "ml": "സ്നേഹം", "en": "love" },
+    "peace": { "ml": "സമാധാനം", "en": "peace" },
+    "hope": { "ml": "പ്രതീക്ഷ", "en": "hope" },
+    "free": { "ml": "സൗജന്യം / സ്വതന്ത്രം", "en": "free" }
+  }
+}
