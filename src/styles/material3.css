@@ -733,3 +733,170 @@ input[type="range"].m3-slider::-webkit-slider-thumb:hover {
   opacity: 1;
   pointer-events: auto;
 }
+
+/* ==========================================================================
+   Tesseract OCR Confidence & Accuracy Metrics
+   ========================================================================== */
+.ocr-stats-card {
+  margin-top: 1rem;
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-lg);
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: var(--md-sys-elevation-1);
+  transition: all 0.25s ease;
+  animation: fadeInStats 0.3s ease-out;
+}
+
+@keyframes fadeInStats {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ocr-stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.ocr-stats-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--md-sys-color-on-surface);
+}
+
+.confidence-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--md-sys-shape-corner-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.confidence-badge.confidence-high {
+  background: #d3f9d8;
+  color: #2b8a3e;
+  border: 1px solid #b2f2bb;
+}
+
+.confidence-badge.confidence-medium {
+  background: #fff3bf;
+  color: #d9480f;
+  border: 1px solid #ffe066;
+}
+
+.confidence-badge.confidence-low {
+  background: #ffe3e3;
+  color: #c92a2a;
+  border: 1px solid #ffc9c9;
+}
+
+/* Theme dark & high-contrast adjustments for badges */
+.theme-m3-dark .confidence-badge.confidence-high,
+.theme-high-contrast-oled .confidence-badge.confidence-high {
+  background: #1b4725;
+  color: #8ce99a;
+  border-color: #2b8a3e;
+}
+
+.theme-m3-dark .confidence-badge.confidence-medium,
+.theme-high-contrast-oled .confidence-badge.confidence-medium {
+  background: #4d3800;
+  color: #ffd43b;
+  border-color: #f59f00;
+}
+
+.theme-m3-dark .confidence-badge.confidence-low,
+.theme-high-contrast-oled .confidence-badge.confidence-low {
+  background: #491217;
+  color: #ff8787;
+  border-color: #c92a2a;
+}
+
+.confidence-meter-container {
+  height: 8px;
+  width: 100%;
+  background: var(--md-sys-color-surface-container-highest);
+  border-radius: var(--md-sys-shape-corner-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.confidence-meter-fill {
+  height: 100%;
+  border-radius: var(--md-sys-shape-corner-full);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+}
+
+.confidence-meter-fill.meter-high {
+  background: linear-gradient(90deg, #40c057, #2b8a3e);
+}
+
+.confidence-meter-fill.meter-medium {
+  background: linear-gradient(90deg, #fab005, #fd7e14);
+}
+
+.confidence-meter-fill.meter-low {
+  background: linear-gradient(90deg, #fa5252, #e03131);
+}
+
+.ocr-stats-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  background: var(--md-sys-color-surface);
+  border-radius: var(--md-sys-shape-corner-md);
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.ocr-metric-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ocr-metric-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 0.15rem;
+}
+
+.ocr-metric-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--md-sys-color-on-surface);
+}
+
+/* OCR Meta Banner in Reader */
+.ocr-meta-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: var(--md-sys-color-surface-container);
+  border-left: 4px solid var(--md-sys-color-primary);
+  padding: 0.5rem 1rem;
+  border-radius: var(--md-sys-shape-corner-md);
+  margin-bottom: 0.75rem;
+  animation: fadeInStats 0.25s ease-out;
+}
+
+.ocr-meta-confidence-score {
+  font-weight: 700;
+  color: var(--md-sys-color-primary);
+}
+
