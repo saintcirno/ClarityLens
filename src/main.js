@@ -23,6 +23,9 @@ const state = {
     rotation: 0
   },
   rawOcrText: '',
+  ocrConfidence: null,
+  ocrLinesCount: 0,
+  ocrWordsCount: 0,
   translatedResult: null,
   activeTab: 'translated', // 'translated' | 'original'
   bionicActive: false,
@@ -63,12 +66,28 @@ const ocrStatusText = document.getElementById('ocr-status-text');
 const ocrPercentText = document.getElementById('ocr-percent-text');
 const ocrProgressFill = document.getElementById('ocr-progress-fill');
 
+// Tesseract OCR Confidence Score Elements
+const ocrStatsCard = document.getElementById('ocr-stats-card');
+const ocrConfidenceBadge = document.getElementById('ocr-confidence-badge');
+const ocrConfidenceMeter = document.getElementById('ocr-confidence-meter');
+const ocrConfidenceMeterFill = document.getElementById('ocr-confidence-meter-fill');
+const ocrConfidenceValue = document.getElementById('ocr-confidence-value');
+const ocrStatLines = document.getElementById('ocr-stat-lines');
+const ocrStatWords = document.getElementById('ocr-stat-words');
+const ocrStatQuality = document.getElementById('ocr-stat-quality');
+
 const readerDisplay = document.getElementById('reader-display');
 const tabTranslated = document.getElementById('tab-translated');
 const tabOriginal = document.getElementById('tab-original');
 const translationBar = document.getElementById('translation-bar');
 const targetLangSelect = document.getElementById('target-lang-select');
 const translationCoverage = document.getElementById('translation-coverage');
+
+// OCR Meta Banner in Reader Display
+const ocrMetaBanner = document.getElementById('ocr-meta-banner');
+const ocrMetaConfidence = document.getElementById('ocr-meta-confidence');
+const ocrMetaTierBadge = document.getElementById('ocr-meta-tier-badge');
+const ocrMetaDetails = document.getElementById('ocr-meta-details');
 
 const btnToggleBionic = document.getElementById('btn-toggle-bionic');
 const btnToggleSyllables = document.getElementById('btn-toggle-syllables');
@@ -256,6 +275,7 @@ async function loadFile(file) {
 
 async function loadPdfDocument(file) {
   showToast(`Loading PDF document: ${file.name}...`);
+  resetOcrStats();
   try {
     const pdfDoc = await pdfEngine.loadPdf(file);
     state.currentPdf = pdfDoc;
@@ -334,6 +354,8 @@ function loadImageFromFile(file) {
     return;
   }
 
+  resetOcrStats();
+
   // Reset PDF state
   state.currentPdf = null;
   state.totalPdfPages = 0;
@@ -361,6 +383,92 @@ function updateImagePreview() {
 
   const canvas = ocrEngine.preprocessImage(state.currentImage, state.preprocessOptions);
   imagePreview.src = canvas.toDataURL('image/jpeg', 0.92);
+}
+
+// ============================================================================
+// OCR Confidence & Stats UI Handlers
+// ============================================================================
+function updateOcrConfidenceUI(confidence, linesCount = 0, wordsCount = 0) {
+  if (confidence === null || confidence === undefined || isNaN(confidence)) {
+    resetOcrStats();
+    return;
+  }
+
+  const roundedConf = Math.min(100, Math.max(0, Math.round(confidence)));
+  state.ocrConfidence = roundedConf;
+  state.ocrLinesCount = linesCount;
+  state.ocrWordsCount = wordsCount;
+
+  // Classify Confidence Quality Tier
+  let tierLabel = 'High Accuracy';
+  let tierClass = 'confidence-high';
+  let meterClass = 'meter-high';
+  if (roundedConf >= 80) {
+    tierLabel = 'High Accuracy';
+    tierClass = 'confidence-high';
+    meterClass = 'meter-high';
+  } else if (roundedConf >= 60) {
+    tierLabel = 'Moderate';
+    tierClass = 'confidence-medium';
+    meterClass = 'meter-medium';
+  } else {
+    tierLabel = 'Low Accuracy';
+    tierClass = 'confidence-low';
+    meterClass = 'meter-low';
+  }
+
+  // Update Left Studio Card
+  if (ocrStatsCard) {
+    ocrStatsCard.style.display = 'flex';
+  }
+  if (ocrConfidenceBadge) {
+    ocrConfidenceBadge.className = `confidence-badge ${tierClass}`;
+    ocrConfidenceBadge.textContent = `${roundedConf}% · ${tierLabel}`;
+  }
+  if (ocrConfidenceMeterFill) {
+    ocrConfidenceMeterFill.className = `confidence-meter-fill ${meterClass}`;
+    ocrConfidenceMeterFill.style.width = `${roundedConf}%`;
+  }
+  if (ocrConfidenceMeter) {
+    ocrConfidenceMeter.setAttribute('aria-valuenow', roundedConf);
+  }
+  if (ocrConfidenceValue) {
+    ocrConfidenceValue.textContent = `${roundedConf}%`;
+  }
+  if (ocrStatLines) {
+    ocrStatLines.textContent = linesCount;
+  }
+  if (ocrStatWords) {
+    ocrStatWords.textContent = wordsCount;
+  }
+  if (ocrStatQuality) {
+    ocrStatQuality.textContent = tierLabel;
+    ocrStatQuality.style.color = roundedConf >= 80 ? '#2b8a3e' : (roundedConf >= 60 ? '#d9480f' : '#c92a2a');
+  }
+
+  // Update Right Reader Meta Banner
+  if (ocrMetaConfidence) {
+    ocrMetaConfidence.textContent = `${roundedConf}%`;
+  }
+  if (ocrMetaTierBadge) {
+    ocrMetaTierBadge.className = `confidence-badge ${tierClass}`;
+    ocrMetaTierBadge.textContent = tierLabel;
+  }
+  if (ocrMetaDetails) {
+    ocrMetaDetails.textContent = `${linesCount} lines · ${wordsCount} words`;
+  }
+
+  if (state.activeTab === 'original' && ocrMetaBanner) {
+    ocrMetaBanner.style.display = 'flex';
+  }
+}
+
+function resetOcrStats() {
+  state.ocrConfidence = null;
+  state.ocrLinesCount = 0;
+  state.ocrWordsCount = 0;
+  if (ocrStatsCard) ocrStatsCard.style.display = 'none';
+  if (ocrMetaBanner) ocrMetaBanner.style.display = 'none';
 }
 
 // ============================================================================
@@ -395,11 +503,17 @@ async function runFullDocumentOCR() {
 
     if (!state.rawOcrText || state.rawOcrText.trim().length === 0) {
       showToast('No clear text detected by Tesseract. Try adjusting contrast or rotation.');
+      resetOcrStats();
       return;
     }
 
+    const conf = Number.isFinite(ocrResult.confidence) ? ocrResult.confidence : 0;
+    const linesCount = ocrResult.lines ? ocrResult.lines.length : 0;
+    const wordsCount = ocrResult.words ? ocrResult.words.length : 0;
+    updateOcrConfidenceUI(conf, linesCount, wordsCount);
+
     processTextPipeline(state.rawOcrText);
-    showToast(`Successfully read document with Tesseract OCR (${ocrResult.lines.length} lines, confidence ${Math.round(ocrResult.confidence)}%).`);
+    showToast(`Successfully read document with Tesseract OCR (${linesCount} lines, confidence ${Math.round(conf)}%).`);
   } catch (err) {
     console.error('Tesseract OCR Error:', err);
     showToast(`Tesseract OCR error: ${err.message}`);
@@ -424,6 +538,7 @@ function renderActiveTab() {
   if (state.activeTab === 'translated') {
     textToRender = state.translatedResult ? state.translatedResult.translatedText : '';
     translationBar.style.display = 'flex';
+    if (ocrMetaBanner) ocrMetaBanner.style.display = 'none';
 
     if (state.translatedResult) {
       translationCoverage.textContent = `Vocabulary Coverage: ${state.translatedResult.coveragePercentage}%`;
@@ -431,6 +546,9 @@ function renderActiveTab() {
   } else if (state.activeTab === 'original') {
     textToRender = state.rawOcrText;
     translationBar.style.display = 'none';
+    if (ocrMetaBanner) {
+      ocrMetaBanner.style.display = state.ocrConfidence !== null ? 'flex' : 'none';
+    }
   }
 
   if (!textToRender || textToRender.trim().length === 0) {
@@ -596,6 +714,7 @@ btnProcessDirectText.addEventListener('click', () => {
     showToast('Please enter some text first.');
     return;
   }
+  resetOcrStats();
   state.rawOcrText = text;
   processTextPipeline(text);
   showToast('Text processed and translated.');
@@ -628,6 +747,7 @@ btnClearImage.addEventListener('click', () => {
   imagePreview.src = '';
   previewContainer.style.display = 'none';
   fileInput.value = '';
+  resetOcrStats();
   showToast('File removed.');
 });
 
