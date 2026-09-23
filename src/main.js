@@ -183,6 +183,7 @@ function populateLanguages() {
     `<option value="${lang.code}">${lang.flag} ${lang.name} (${lang.nativeName})</option>`
   ).join('');
 
+  translationEngine.setTargetLanguage(state.selectedLanguage);
   targetLangSelect.value = state.selectedLanguage;
 }
 
@@ -541,7 +542,7 @@ function renderActiveTab() {
     if (ocrMetaBanner) ocrMetaBanner.style.display = 'none';
 
     if (state.translatedResult) {
-      translationCoverage.textContent = `Vocabulary Coverage: ${state.translatedResult.coveragePercentage}%`;
+      translationCoverage.textContent = `LinguiJS + Local: ${state.translatedResult.coveragePercentage}%`;
     }
   } else if (state.activeTab === 'original') {
     textToRender = state.rawOcrText;
@@ -821,12 +822,18 @@ tabTranslated.addEventListener('click', () => switchTab('translated'));
 tabOriginal.addEventListener('click', () => switchTab('original'));
 
 targetLangSelect.addEventListener('change', async (e) => {
-  state.selectedLanguage = e.target.value;
+  const selectedLangCode = e.target.value;
+  state.selectedLanguage = translationEngine.setTargetLanguage(selectedLangCode);
+
+  const langLabel = e.target.options[e.target.selectedIndex].text;
+  const toastMsg = translationEngine.t('toast.target_language_changed', { language: langLabel });
+  showToast(toastMsg || `Target language: ${langLabel}`);
+
   if (state.rawOcrText) {
     state.translatedResult = await translationEngine.translate(state.rawOcrText, state.selectedLanguage);
     renderActiveTab();
-    showToast(`Target language: ${e.target.options[e.target.selectedIndex].text}`);
   }
+  populateVoices();
 });
 
 btnToggleBionic.addEventListener('click', () => {
