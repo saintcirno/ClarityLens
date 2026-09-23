@@ -196,6 +196,40 @@
           <div id="ocr-progress-fill" class="m3-progress-bar-fill"></div>
         </div>
       </div>
+
+      <!-- Tesseract OCR Confidence Score & Accuracy Card -->
+      <div id="ocr-stats-card" class="ocr-stats-card" style="display: none;" role="region" aria-label="OCR Confidence and Accuracy Results">
+        <div class="ocr-stats-header">
+          <div class="ocr-stats-title">
+            <span class="ocr-stats-icon" aria-hidden="true">🎯</span>
+            <span>Tesseract OCR Confidence</span>
+          </div>
+          <span id="ocr-confidence-badge" class="confidence-badge confidence-high">94% High</span>
+        </div>
+
+        <div class="confidence-meter-container" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="ocr-confidence-meter" aria-label="OCR recognition confidence meter">
+          <div id="ocr-confidence-meter-fill" class="confidence-meter-fill" style="width: 0%;"></div>
+        </div>
+
+        <div class="ocr-stats-metrics">
+          <div class="ocr-metric-item">
+            <span class="ocr-metric-label">Confidence</span>
+            <span id="ocr-confidence-value" class="ocr-metric-value">--%</span>
+          </div>
+          <div class="ocr-metric-item">
+            <span class="ocr-metric-label">Lines</span>
+            <span id="ocr-stat-lines" class="ocr-metric-value">0</span>
+          </div>
+          <div class="ocr-metric-item">
+            <span class="ocr-metric-label">Words</span>
+            <span id="ocr-stat-words" class="ocr-metric-value">0</span>
+          </div>
+          <div class="ocr-metric-item">
+            <span class="ocr-metric-label">Quality</span>
+            <span id="ocr-stat-quality" class="ocr-metric-value">--</span>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Right Column: Accessible Reader & Translator -->
@@ -243,6 +277,19 @@
         <span id="translation-coverage"
           style="font-size: 0.8rem; color: var(--md-sys-color-on-surface-variant); margin-left: auto;">
           100% Local Dataset
+        </span>
+      </div>
+
+      <!-- OCR Metadata & Confidence Bar for Original Tab -->
+      <div id="ocr-meta-banner" class="ocr-meta-banner" style="display: none;" role="status">
+        <span style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.85rem;">
+          <span aria-hidden="true">🎯</span>
+          <span>Tesseract OCR Confidence:</span>
+          <span id="ocr-meta-confidence" class="ocr-meta-confidence-score">--%</span>
+          <span id="ocr-meta-tier-badge" class="confidence-badge confidence-high">High</span>
+        </span>
+        <span id="ocr-meta-details" style="font-size: 0.8rem; color: var(--md-sys-color-on-surface-variant); margin-left: auto;">
+          0 lines · 0 words
         </span>
       </div>
 
