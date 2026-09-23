@@ -1,45 +1,13 @@
-import { setupI18n } from '@lingui/core';
 import translationDataset from '../data/translation-dataset.json' with { type: 'json' };
-import enMessages from '../locales/en.js';
-import mlMessages from '../locales/ml.js';
 
 /**
- * LinguiJS-Powered Client-Side Translation & Locale Engine
- * Manages target language state, Lingui message catalogs, and local translation matrix.
+ * Client-Side Dataset-Driven Translation Engine
+ * Translates without any cloud or API requests.
+ * Uses local parallel dictionary and phrase matrix dataset for English and Malayalam.
  */
-export class TranslationEngine {
+class TranslationEngine {
   constructor() {
     this.dataset = translationDataset;
-
-    // Initialize LinguiJS i18n instance with English and Malayalam catalogs
-    this.i18n = setupI18n({
-      locale: 'ml',
-      messages: {
-        en: enMessages,
-        ml: mlMessages
-      }
-    });
-
-    this.activeLocale = 'ml';
-  }
-
-  /**
-   * Set and activate target language using LinguiJS
-   * @param {string} langCode - 'ml' or 'en'
-   */
-  setTargetLanguage(langCode = 'ml') {
-    const supported = this.getSupportedLanguages().some(l => l.code === langCode);
-    const target = supported ? langCode : 'ml';
-    this.activeLocale = target;
-    this.i18n.activate(target);
-    return target;
-  }
-
-  /**
-   * Get currently active target language
-   */
-  getTargetLanguage() {
-    return this.i18n.locale || this.activeLocale;
   }
 
   /**
@@ -50,30 +18,18 @@ export class TranslationEngine {
   }
 
   /**
-   * Translate a UI or phrase key directly using LinguiJS message catalog
-   * @param {string} id - Message ID or phrase
-   * @param {Object} values - Interpolation values
-   */
-  t(id, values = {}) {
-    return this.i18n._(id, values);
-  }
-
-  /**
-   * Translate text into target language using LinguiJS catalog + local matrix
+   * Translate text into target language purely using local dataset
    * @param {string} text
    * @param {string} targetLangCode - 'ml' (Malayalam) or 'en' (English)
    */
   async translate(text, targetLangCode = 'ml') {
-    this.setTargetLanguage(targetLangCode);
-
     if (!text || text.trim().length === 0) {
       return {
         translatedText: '',
         targetLang: targetLangCode,
         translatedPhrasesCount: 0,
         translatedWordsCount: 0,
-        coveragePercentage: 100,
-        engine: 'LinguiJS + Local Matrix'
+        coveragePercentage: 100
       };
     }
 
@@ -85,22 +41,16 @@ export class TranslationEngine {
     const phrases = this.dataset.phrases || {};
     const words = this.dataset.words || {};
 
-    // 1. LinguiJS & Phrase translation: Match multi-word phrases and catalog expressions
+    // 1. Phrase translation: Match multi-word phrases and document expressions
     const sortedPhrases = Object.keys(phrases).sort((a, b) => b.length - a.length);
     for (const phraseKey of sortedPhrases) {
-      // Check Lingui catalog first, then fallback to dataset
-      const catalogTranslation = this.i18n._(phraseKey);
-      const datasetTranslation = phrases[phraseKey] ? phrases[phraseKey][targetLangCode] : null;
-      const translatedPhrase = (catalogTranslation && catalogTranslation !== phraseKey)
-        ? catalogTranslation
-        : datasetTranslation;
-
-      if (translatedPhrase) {
+      const translations = phrases[phraseKey];
+      if (translations && translations[targetLangCode]) {
         const regex = new RegExp(`\\b${this.escapeRegex(phraseKey)}\\b`, 'gi');
         if (regex.test(output)) {
           output = output.replace(regex, match => {
             phrasesCount++;
-            return this.matchCase(match, translatedPhrase);
+            return this.matchCase(match, translations[targetLangCode]);
           });
         }
       }
@@ -145,8 +95,7 @@ export class TranslationEngine {
       targetLang: targetLangCode,
       translatedPhrasesCount: phrasesCount,
       translatedWordsCount: wordsCount,
-      coveragePercentage: Math.min(100, coveragePercentage),
-      engine: 'LinguiJS + Local Matrix'
+      coveragePercentage: Math.min(100, coveragePercentage)
     };
   }
 
@@ -166,4 +115,3 @@ export class TranslationEngine {
 }
 
 export const translationEngine = new TranslationEngine();
-export const i18n = translationEngine.i18n;
